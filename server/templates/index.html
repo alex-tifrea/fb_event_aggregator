@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style type="text/css">
+        html,
+        body,
+        #map-canvas {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCq7r2uX_Tu-QwLk6kSUCjE-O7qtzcL21c">
+    </script>
+    <link rel="stylesheet" type="text/css" href="/templates/gdropdown.css" />
+    <script type="text/javascript" src="/templates/gdropdown.js"></script>
+    <script type="text/javascript">
+        todayEvents = [];
+        threeDaysEvents = [];
+        weekEvents = [];
+        monthEvents = [];
+        infoWindows = [];
+        incidents = [];
+        webcams = [];
+        showToday = false;
+        showThreeDays = false;
+        showWeek = false;
+        showMonth = false;
+        showIncidents = false;
+        showWebcams = false;
+
+        // get Traffic info
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/events', true);
+        xhr.onload = function(e) {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    handleResponse(xhr.responseText);
+                } else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = function(e) {
+            console.error(xhr.statusText);
+        };
+        xhr.send(null);
+
+        function handleResponse(response) {
+            // Traffic info handler
+            // Facebook events
+            events = JSON.parse(response);
+            events.data.forEach(function(evt) {
+                if (evt.lat !== 'None' && evt.lng !== 'None' && evt.attending != 'None' && evt.start_time !== 'None') {
+                    var start_time = new Date(evt.start_time);
+                    var midnight = new Date(new Date().getTime() + 24 * 60 * 60 * 1000);
+                    midnight.setHours(0, 0, 0, 0);
+                    var threeDays = new Date(midnight.getTime() + 3 * 24 * 60 * 60 * 1000);
+                    var week = new Date(midnight.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    var month = new Date(midnight.getTime() + 31 * 24 * 60 * 60 * 1000);
+
+                    var radius;
+                    if (evt.attending < 100) {
+                        radius = evt.attending;
+                    } else if (evt.attending < 1000) {
+                        radius = 100 + evt.attending / 10;
+                    } else {
+                        radius = 200 + evt.attending / 100;
+                    }
+
+                    var circleOptions = {
+                        strokeWeight: 0,
+                        fillColor: '#519BFC',
+                        fillOpacity: 0.40,
+                        map: map,
+                        center: new google.maps.LatLng(parseFloat(evt.lat), parseFloat(evt.lng)),
+                        radius: radius
+                    };
+                    // Info window
+                    var contentString = '<div style="overflow:hidden;line-height:1.35;max-width:300px;">';
+                    if (evt.cover != null) {
+                        contentString += '<img style="max-height:100%;max-width:100%"'
+                        contentString += 'src=' + evt.cover + '>';
+                    }
+                    contentString += '<h3>' + evt.name + '</h3>';
+                    contentString += '<li> Attending: ' + evt.attending + '</li>';
+                    contentString += '<li> Start time: ' +
+                        (new Date(evt.start_time)).toString().split(' GMT')[0] + '</li>';
+                    if (evt.end_time) {
+                        contentString += '<li> End time: ' +
+                            (new Date(evt.end_time)).toString().split(' GMT')[0] + '</li>';
+                    }
+                    contentString += '</div>';
+                    var infowindow = new google.maps.InfoWindow({
+                        content: contentString,
+                        position: circleOptions.center,
+                        maxWidth: 300
+                    });
+                    infoWindows.push(infowindow);
+
+                    // Add the circle for this city to the map.
+                    circle = new google.maps.Circle(circleOptions);
+                    circle.setMap(null);
+                    google.maps.event.addListener(circle, 'click', function() {
+                        infowindow.open(map,circle);
+                    });
+
+                    if (start_time <= midnight) {
+                        todayEvents.push(circle);
+                        circle.setMap(map);
+                    }
+                    if (start_time < threeDays) {
+                        threeDaysEvents.push(circle);
+                    }
+                    if (start_time < week) {
+                        weekEvents.push(circle);
+                    }
+                    if (start_time < month) {
+                        monthEvents.push(circle);
+                    }
+                }
+            });
+            // Traffic Incidents
+            events.incidents.forEach(function(evt) {
+                var circleOptions = {
+                    strokeWeight: 0,
+                    fillColor: '#FF3300',
+                    fillOpacity: 0.40,
+                    map: map,
+                    center: new google.maps.LatLng(parseFloat(evt.lat), parseFloat(evt.lng)),
+                    radius: 100
+                };
+                var contentString = '<div style="overflow:hidden;line-height:1.35;max-width:300px;">';
+                contentString += '<h3>' + evt.incident_type + '</h3>';
+                contentString += '<img style="max-height:200px"; src=';
+                if (evt.incident_type === 'traffic accident') {
+                    contentString += '/templates/accident_icon_gif.gif>';
+                } else if (evt.incident_type === 'traffic jam') {
+                    contentString += '/templates/traffic_jam_icon.png>';
+                } else if (evt.incident_type === 'road under construction') {
+                    contentString += '/templates/construction_icon.jpg>';
+                } else if (evt.incident_type === 'flash flood') {
+                    contentString += '/templates/flood_icon.png>';
+                } else if (evt.incident_type === 'snow blizzard') {
+                    contentString += '/templates/blizzard_icon.png>';
+                }
+                else {
+                    contentString += '/templates/other.png>';
+                }
+                contentString += '<li> Vehicles involved: ' + evt.average_num_vehicles + '</li>';
+                contentString += '<li> Waiting time: ' + evt.average_duration_time + '</li>';
+                contentString += '<li> Last report time: ' +
+                    (new Date(evt.last_report_time)).toString().split(' GMT')[0] + '</li>';
+                contentString += '</div>';
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    position: circleOptions.center,
+                    maxWidth: 300
+                });
+                infoWindows.push(infowindow);
+                circle = new google.maps.Circle(circleOptions);
+                circle.setMap(null);
+                google.maps.event.addListener(circle, 'click', function() {
+                    infowindow.open(map,circle);
+                });
+                incidents.push(circle);
+            });
+            // Webcam information
+            events.webcams.forEach(function(evt) {
+                var circleOptions = {
+                    strokeWeight: 0,
+                    fillColor: '#9966FF',
+                    fillOpacity: 0.40,
+                    map: map,
+                    center: new google.maps.LatLng(parseFloat(evt.lat), parseFloat(evt.lng)),
+                    radius: 100
+                };
+                var contentString = '<div style="overflow:hidden;line-height:1.35;max-width:300px;">';
+                contentString += '<h3>Traffic load: ' + Math.round(evt.traffic_indicator/500) +  '/100</h3>';
+                var infowindow = new google.maps.InfoWindow({
+                    content: contentString,
+                    position: circleOptions.center,
+                    maxWidth: 300
+                });
+                infoWindows.push(infowindow);
+                circle = new google.maps.Circle(circleOptions);
+                circle.setMap(null);
+                google.maps.event.addListener(circle, 'click', function() {
+                    infowindow.open(map,circle);
+                });
+                webcams.push(circle);
+            });
+        }
+
+        function initialize() {
+            var mapOptions = {
+                center: {
+                    lat: 44.4297378,
+                    lng: 26.1055353
+                },
+                zoom: 14
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+                mapOptions);
+
+            // Hides all cirecles, and shows the ones given as parameter
+            function resetCircles(circles, show, divId) {
+                    show = !show;
+                    var new_map = null;
+                    if (show == true) {
+                        new_map = map;
+                    }
+                    // Hide all first
+                    monthEvents.forEach(function(circle) {
+                        circle.setMap(null);
+                    });
+                    incidents.forEach(function(circle) {
+                        circle.setMap(null);
+                    });
+                    document.getElementById("today").style.display = 'none';
+                    document.getElementById("threeDays").style.display = 'none';
+                    document.getElementById("week").style.display = 'none';
+                    document.getElementById("month").style.display = 'none';
+                    document.getElementById("incidents").style.display = 'none';
+                    document.getElementById("webcams").style.display = 'none';
+                    showToday = false;
+                    showThreeDays = false;
+                    showWeek = false;
+                    showMonth = false;
+                    showIncidents = false;
+                    showWebcams = false;
+
+                    if (show) {
+                        document.getElementById(divId).style.display = 'block';
+                    }
+                    circles.forEach(function(circle) {
+                        circle.setMap(new_map);
+                    });
+                    return show;
+                }
+            // Dropdown controls for selecting what information is to be
+            // displayed on the map
+            var todayOptions = {
+                gmap: map,
+                title: "Events today",
+                id: "today",
+                label: "Today",
+                action: function() {
+                    showToday = resetCircles(todayEvents, showToday, "today");
+                }
+            }
+            var today = new checkBox(todayOptions);
+            setTimeout(function() {
+                today.click();
+            }, 1500);
+
+            var threeDaysOptions = {
+                gmap: map,
+                title: "Events in three days",
+                id: "threeDays",
+                label: "In three days",
+                action: function() {
+                    showThreeDays = resetCircles(threeDaysEvents, showThreeDays, "threeDays");
+                }
+            }
+            var threeDays = new checkBox(threeDaysOptions);
+
+            var weekOptions = {
+                gmap: map,
+                title: "Events this week",
+                id: "week",
+                label: "In a week",
+                action: function() {
+                    showWeek = resetCircles(weekEvents, showWeek, "week");
+                }
+            }
+            var week = new checkBox(weekOptions);
+
+            var monthOptions = {
+                gmap: map,
+                title: "Events this month",
+                id: "month",
+                label: "In a month",
+                action: function() {
+                    showMonth = resetCircles(monthEvents, showMonth, "month");
+                }
+            }
+            var month = new checkBox(monthOptions);
+
+            var incidentsOptions = {
+                gmap: map,
+                title: "Traffic incidents",
+                id: "incidents",
+                label: "Traffic incidents",
+                action: function() {
+                    showIncidents = resetCircles(incidents, showIncidents, "incidents");
+                }
+            }
+            var incidentsCB = new checkBox(incidentsOptions);
+
+            var webcamsOptions = {
+                gmap: map,
+                title: "Webcams",
+                id: "webcams",
+                label: "Webcams",
+                action: function() {
+                    showWebcams = resetCircles(webcams, showWebcams, "webcams");
+                }
+            }
+            var webcamsCB = new checkBox(webcamsOptions);
+
+
+            //put them all together to create the drop down
+            var ddDivOptions = {
+                items: [today, threeDays, week, month, incidentsCB, webcamsCB],
+                id: "myddOptsDiv"
+            }
+            var dropDownDiv = new dropDownOptionsDiv(ddDivOptions);
+
+            var dropDownOptions = {
+                gmap: map,
+                name: 'Traffic Info',
+                id: 'ddControl',
+                title: 'Traffic information for different time intervals',
+                position: google.maps.ControlPosition.TOP_RIGHT,
+                dropDown: dropDownDiv
+            }
+
+            var dropDown = new dropDownControl(dropDownOptions);
+            google.maps.event.addListener(map, "click", function(event) {
+                infoWindows.forEach(function(infowindow) {
+                    infowindow.close();
+                });
+            });
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <div id="map-canvas"></div>
+</head>
+<body>
+</body>
+</html>

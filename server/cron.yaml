@@ -1,0 +1,8 @@
+cron:
+- description: hourly event crawling
+  url: /crawler
+  schedule: every 2 hours
+
+- description: hourly event delete old incidents
+  url: /delete-incident
+  schedule: every 60 minutes

@@ -1,0 +1,24 @@
+version: 1
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /crawler
+  script: eventCrawler.app
+
+- url: /delete-incident
+  script: updateIncidents.app
+
+- url: /
+  static_files: templates/index.html
+  upload: templates/index.html
+
+- url: /templates/*
+  static_dir: templates
+
+- url: /report.*
+  script: reportIncident.app
+
+- url: /.*
+  script: trafficInfoServ.app

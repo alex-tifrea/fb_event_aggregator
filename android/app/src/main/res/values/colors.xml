@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red">#ffff0000</color>
+    <color name="brown">#ffA62900</color>
+    <color name="light_brown1">#d9a62900</color>
+    <color name="dark_brown">#ff623100</color>
+    <color name="light_brown2">#ffac6319</color>
+    <color name="light_brown3">#ffb57533</color>
+    <color name="orange">#ffff8b02</color>
+    <color name="facebook_blue">#ff3b5998</color>
+
+</resources>

@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="0dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants">
+
+    <RelativeLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:background="@color/brown"
+        android:gravity="center" >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:text="Report a Traffic Incident"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_marginBottom="25dp"
+            android:typeface="sans"
+            android:textSize="30sp" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="0dp"
+            android:paddingTop="0dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|left"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="35dp"
+                android:text="Fill in the following fields to help us understand what you are dealing with:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textStyle="bold"
+                android:textSize="18sp"/>
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:text="1) What kind of traffic incident are you dealing with?"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17sp" />
+
+            <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/radio_group"
+                android:orientation="vertical">
+
+                <RadioButton
+                    android:id="@+id/radioButton0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/accident" />
+
+                <RadioButton
+                    android:id="@+id/radioButton1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/jam" />
+
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/construction" />
+
+                <RadioButton
+                    android:id="@+id/radioButton3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/flood" />
+
+                <RadioButton
+                    android:id="@+id/radioButton4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/blizzard" />
+
+                <RadioButton
+                    android:id="@+id/radioButton5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="35dp"
+                    android:layout_marginTop="5dp"
+                    android:checked="false"
+                    android:clickable="true"
+                    android:onClick="onRadioButtonClicked"
+                    android:text="@string/other" />
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/textView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:text="2) Estimate the number of vehicles involved:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/editText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:ems="10"
+                android:gravity="right"
+                android:hint="Number of vehicles"
+                android:inputType="number" />
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="25dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="10dp"
+                android:text="3) How long do you estimate it will take until the incident is solved:"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/editText2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:ems="10"
+                android:gravity="right"
+                android:hint="minutes"
+                android:inputType="number" />
+
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SUBMIT"
+                android:textStyle="bold"
+                android:id="@+id/button"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:layout_gravity="center_horizontal"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:background="@xml/rounded_button" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

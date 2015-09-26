@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Search Widget -->
+    <item android:id="@+id/action_search"
+        android:icon="@drawable/ic_action_search"
+        android:title="@string/action_search"
+        android:showAsAction="always"
+        android:actionViewClass="android.widget.SearchView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- Events checkbox -->
+    <group android:checkableBehavior="all">
+        <item android:id="@+id/events_today"
+            android:title="Today" />
+        <item android:id="@+id/events_threedays"
+            android:title="In three days" />
+        <item android:id="@+id/events_week"
+            android:title="In a week" />
+        <item android:id="@+id/events_month"
+            android:title="In a month" />
+    </group>
+
+    <!-- Refresh app. Get fresh data from the server -->
+    <item android:id="@+id/action_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:title="@string/action_refresh"
+        android:showAsAction="ifRoom"
+        />
+
+    <!-- Report traffic incident -->
+    <item android:id="@+id/action_report_incident"
+        android:icon="@drawable/ic_action_error"
+        android:title="@string/action_report_incident"
+        android:showAsAction="never"
+        />
+
+    <!-- About -->
+    <item android:id="@+id/action_about"
+        android:icon="@drawable/ic_action_help"
+        android:title="@string/action_about"
+        android:showAsAction="never"/>
+</menu>

@@ -1,0 +1,96 @@
+<!doctype html>
+
+<html>
+<head>
+  <title>FB-E-A</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+
+  <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+  <link rel="import" href="bower_components/google-map/google-map.html">
+  <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+  <!-- <link rel="import" href="bower_components/font-roboto/roboto.html"> -->
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html">
+  <link rel="import" href="bower_components/paper-drawer-panel/paper-drawer-panel.html">
+  <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
+  <link rel="import" href="bower_components/paper-item/paper-item.html">
+  <link rel="import" href="bower_components/paper-fab/paper-fab.html">
+  <link rel="import" href="bower_components/paper-menu/paper-menu.html">
+  <link rel="import" href="bower_components/paper-slider/paper-slider.html">
+  <link rel="import" href="bower_components/paper-tabs/paper-tabs.html">
+  <link rel="import" href="bower_components/paper-toast/paper-toast.html">
+  <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+  
+  <style is="custom-style">
+    body {
+      font-family: Roboto, sans-serif;
+      color: #333;
+      margin: 0;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      -webkit-tap-highlight-color: rgba(0,0,0,0);
+      -webkit-touch-callout: none;
+    }
+    
+    #paperDrawerPanel [main] {
+      background-color: #ccc;
+    }
+    
+    paper-drawer-panel [drawer] {
+      box-shadow: rgba(0, 0, 0, 0.4) 0px 2px 10px, rgba(0, 0, 0, 0.1) 0px 0px 3px;
+    }
+    
+    paper-slider.orange {
+      --paper-slider-knob-color: var(--paper-orange-500);
+      --paper-slider-active-color: var(--paper-orange-500);
+      --paper-slider-pin-color: var(--paper-orange-500);
+    }
+    paper-button.toggleMenu {
+      margin: 5px;
+      position: absolute;
+      background: var(--paper-blue-400);
+      width: 50px;
+      z-index: 10;
+    }
+    paper-toolbar {
+      background: var(--paper-blue-400);
+    }
+    
+    google-map {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body unresolved>
+  <paper-drawer-panel id="paperDrawerPanel">
+    <div drawer>
+      <paper-toolbar>
+        <span class="title">FB Events</span>
+        <paper-icon-button onclick="toggleDrawer();" icon="close"></paper-icon-button>
+      </paper-toolbar>  
+      <paper-menu>
+        <paper-item>Item 1</paper-item>
+        <paper-item>Item 2</paper-item>
+      </paper-menu>
+      <paper-slider id="ratings" pin snaps max="30" step="3" value="12" class="orange"></paper-slider>
+      
+    </div>
+    
+    <div main> 
+      <paper-button id="toggleMenu" onclick="toggleDrawer();" class="toggleMenu" raised="true"><iron-icon icon="menu"></iron-icon></paper-button>
+      <google-map apiKey="AIzaSyCq7r2uX_Tu-QwLk6kSUCjE-O7qtzcL21c" disable-default-ui latitude="37.77493" longitude="-122.41942"></google-map>
+    </div>
+  </paper-drawer-panel>
+
+  <script src="main.js"></script>
+</body>
+</html>

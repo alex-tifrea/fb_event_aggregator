@@ -1,15 +1,15 @@
 var toggleButton = document.querySelector("#toggleMenu");
 var drawerPanel = document.querySelector('#paperDrawerPanel');
 var narrow = drawerPanel.narrow;
-var map = document.querySelector("google-maps");
+var map;
+
 
 drawerPanel.addEventListener("paper-responsive-change", function(e) {
   narrow = e.detail.narrow;
-  var map = document.querySelector("google-map");
   if (narrow) {
     setTimeout(function () {
-      map.resize();
-    }, 500);
+      google.maps.event.trigger(map, 'resize');
+    }, 400);
   }
 });
 
@@ -27,3 +27,38 @@ function toggleDrawer () {
   }
 }
 document.toogleDrawer = toggleDrawer;
+
+function initMap() {
+  var mapDiv = document.querySelector('#map');
+  map = new google.maps.Map(mapDiv, {
+    center: {lat: -34.397, lng: 150.644},
+    zoom: 8,
+    disableDefaultUI: true
+  });
+
+   // Try HTML5 geolocation.
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = {
+        lat: position.coords.latitude,
+        lng: position.coords.longitude
+      };
+      map.setCenter(pos);
+      map.setZoom(11);
+    }, function() {
+      handleLocationError(true);
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false);
+  }
+}
+
+function handleLocationError(browserHasGeolocation) {
+  if (browserHasGeolocation) {
+    console.log('The Geolocation service failed.');
+  }
+  else {
+    console.log('Error: Your browser doesn\'t support geolocation.');
+  }
+}

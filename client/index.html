@@ -10,7 +10,6 @@
 
   <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
-  <link rel="import" href="bower_components/google-map/google-map.html">
   <link rel="import" href="bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
   <!-- <link rel="import" href="bower_components/font-roboto/roboto.html"> -->
@@ -63,7 +62,7 @@
       background: var(--paper-blue-400);
     }
     
-    google-map {
+    #map {
       height: 100%;
       width: 100%;
     }
@@ -87,10 +86,12 @@
     
     <div main> 
       <paper-button id="toggleMenu" onclick="toggleDrawer();" class="toggleMenu" raised="true"><iron-icon icon="menu"></iron-icon></paper-button>
-      <google-map apiKey="AIzaSyCq7r2uX_Tu-QwLk6kSUCjE-O7qtzcL21c" disable-default-ui latitude="37.77493" longitude="-122.41942"></google-map>
+      <div id="map"></div>
     </div>
   </paper-drawer-panel>
-
   <script src="main.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCq7r2uX_Tu-QwLk6kSUCjE-O7qtzcL21c&callback=initMap"
+    async defer>
+  </script>
 </body>
 </html>
